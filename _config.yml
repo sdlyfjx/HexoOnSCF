@@ -1,0 +1,129 @@
+# Hexo Configuration
+## Docs: https://hexo.io/docs/configuration.html
+## Source: https://github.com/hexojs/hexo/
+
+# Site
+title: 站点标题
+subtitle: 站点副标题
+description:
+keywords: 
+author: 
+language: 
+timezone: Asia/Shanghai
+
+# URL
+## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
+url: https://yoursite.com
+root: /
+# permalink: :category/:id/
+# permalink_defaults:
+# 永久链接插件：使用了hexo的插件abbrlink，它本身是可以自动生成abbrlink的，但是为了保证生成链接的可预知性，这里将abbrlink的生成功能关闭了，只在post文件的front-matter中指定abbrlink即可
+permalink: /blog/:abbrlink/
+# abbrlink:
+#   alg: crc32  # 算法：crc16(default) and crc32
+#   rep: hex    # 进制：dec(default) and hex
+
+# Directory
+## 由于SCF是基于Docker的，所以可读写目录为/tmp目录，这里要指定目录的绝对路径
+source_dir: /tmp/source
+## 同样，生成路径也需要放到/tmp中，因为只有/tmp是可读写的
+public_dir: /tmp/public
+## 下面的几个目录都是在public_dir下面的，所以无需再指定到/tmp目录下，当然也可自定义配置
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+code_dir: downloads/code
+i18n_dir: :lang
+skip_render: 
+
+# Writing
+new_post_name: :title.md # File name of new posts
+default_layout: post
+titlecase: false # Transform title into titlecase
+external_link: true # Open external links in new tab
+filename_case: 0
+render_drafts: false
+post_asset_folder: false
+relative_link: true
+future: true
+highlight:
+  enable: true
+  line_number: true
+  auto_detect: false
+  tab_replace:
+  
+# Home page setting
+# path: Root path for your blogs index page. (default = '')
+# per_page: Posts displayed per page. (0 = disable pagination)
+# order_by: Posts order. (Order by date descending by default)
+index_generator:
+  path: ''
+  per_page: 10
+  order_by: -date
+  
+# Category & Tag
+default_category: uncategorized
+category_map:
+tag_map:
+
+# Date / Time format
+## Hexo uses Moment.js to parse and display date
+## You can customize the date format as defined in
+## http://momentjs.com/docs/#/displaying/format/
+date_format: YYYY-MM-DD
+time_format: HH:mm:ss
+
+# Pagination
+## Set per_page to 0 to disable pagination
+per_page: 10
+pagination_dir: page
+
+# Extensions
+## Plugins: https://hexo.io/plugins/
+## Themes: https://hexo.io/themes/
+## 主题请到官网选择一个合适的主题即可
+theme: diaspora
+
+# Deployment
+## Docs: https://hexo.io/docs/deployment.html
+# deploy: 
+#   type: cos
+#   appId: 
+#   secretId: 
+#   secretKey: 
+#   bucket: 
+#   region: 
+  
+# 字数统计和阅读时间插件
+## Docs: https://github.com/theme-next/hexo-symbols-count-time
+# symbols_count_time:
+#   # 开启文章统计
+#   symbols: true
+#   time: true
+#   # 开启全站统计
+#   total_symbols: true
+#   total_time: false
+
+# 自动识别超链接，记得关闭urls的转换，因为这会导致百度的统计模块失效
+## Docs: https://github.com/klugjo/hexo-autolinker
+# autolinker:
+#   enable: true
+#   newWindow: true
+#   urls: false
+#   email: true
+#   tel: true
+#   twitter: false
+#   hashtag: false
+#   className: 'autolinker'
+
+# COS相关配置和部署的前缀目录（deployPrefix）
+# deployPrefix需要和上面permalink的前缀统一（去掉开头的/）
+## Docs: https://cloud.tencent.com/document/product/436/8629
+## deployPrefix指生成的文章需要部署到COS的前缀路径，如本项目的网站根目录为/，但生成文章的abbrlink前缀在blog/目录下，则此处需要配置为blog/
+## 这里的密钥可使用腾讯云子用户的账号，需要有指定COS的访问权限和CDN的访问权限即可
+cos_v5:
+  secretId: 
+  secretKey: 
+  bucket: bucketname-appid
+  region: 
+  deployPrefix: blog/
