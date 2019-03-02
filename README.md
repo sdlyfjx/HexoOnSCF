@@ -69,6 +69,17 @@ mp3: https://xxx.com/xxx.mp3 //选填，可指定文章背景音乐，无该字�
 ## 关于文章资源和页面的删除
 当用户将res目录下的资源删除时，不会触发任何事件删除已发布的页面，用户需自己实现在删除source文件时删除对应的已发布的页面静态页面。但用户无需关心刷新CDN，因为系统会自动处理
 
+## 关于文章中插入原生HTML标签或JS代码的问题
+更多标签说明参考[官方文档](https://hexo.io/zh-cn/docs/tag-plugins)：
+通过用`{% raw %}HTML{% endraw %}`标签包裹的内容，Hexo不会做处理。例如下面，在文章资源中插入一段音频的代码：
+```html
+{% raw %}
+<video controls="" preload="none" poster="封面缩略图URL">
+      <source src="资源地址.mp3" type="audio/mp3">
+</video>
+{% endraw %}
+```
+
 ## 使用说明：
 1. clone项目到CentOS7中。（由于腾讯云的SCF是运行于CentOS7环境下的Docker容器，所以需要使用CentOS7上执行一下`npm install`来安装对应的依赖包）
 1. 根据需要和配置修改`_config.yml`中的配置
