@@ -8,7 +8,7 @@ subtitle: 站点副标题
 description:
 keywords: 
 author: 
-language: 
+language: zh
 timezone: Asia/Shanghai
 
 # URL
@@ -96,13 +96,13 @@ theme: diaspora
   
 # 字数统计和阅读时间插件
 ## Docs: https://github.com/theme-next/hexo-symbols-count-time
-# symbols_count_time:
-#   # 开启文章统计
-#   symbols: true
-#   time: true
-#   # 开启全站统计
-#   total_symbols: true
-#   total_time: false
+symbols_count_time:
+  # 开启文章统计
+  symbols: true
+  time: true
+  # 开启全站统计
+  total_symbols: true
+  total_time: false
 
 # 自动识别超链接，记得关闭urls的转换，因为这会导致百度的统计模块失效
 ## Docs: https://github.com/klugjo/hexo-autolinker
@@ -127,3 +127,26 @@ cos_v5:
   bucket: bucketname-appid
   region: 
   deployPrefix: blog/
+
+# hexo-renderer-stylus Configure
+# https://github.com/hexojs/hexo-renderer-stylus#readme
+stylus:
+  compress: true   # Compress generated CSS (default: false)
+  sourcemaps:
+    comment: true  # Adds a comment with the sourceMappingURL to the generated CSS (default: true)
+    inline: false  # Inlines the sourcemap with full source text in base64 format (default: false)
+    sourceRoot: '' # sourceRoot property of the generated sourcemap
+    basePath: .    # Base path from which sourcemap and all sources are relative (default: .)
+
+# hexo-renderer-markdown-it-plus
+# https://github.com/CHENXCHEN/hexo-renderer-markdown-it-plus
+markdown_it_plus:
+    highlight: true
+    html: true
+    xhtmlOut: true
+    breaks: true
+    langPrefix:
+    linkify: true
+    typographer:
+    quotes: “”‘’
+    pre_class: highlight

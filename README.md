@@ -70,8 +70,11 @@ mp3: https://xxx.com/xxx.mp3 //选填，可指定文章背景音乐，无该字�
 当用户将res目录下的资源删除时，不会触发任何事件删除已发布的页面，用户需自己实现在删除source文件时删除对应的已发布的页面静态页面。但用户无需关心刷新CDN，因为系统会自动处理
 
 ## 关于文章中插入原生HTML标签或JS代码的问题
-更多标签说明参考[官方文档](https://hexo.io/zh-cn/docs/tag-plugins)：
-通过用`{% raw %}HTML{% endraw %}`标签包裹的内容，Hexo不会做处理。例如下面，在文章资源中插入一段音频的代码：
+
+由于当前项目使用了`Hexo-Renderer-Markdown-it-plus引擎`进行页面渲染，所以在全局`_config.yml`中已经开启了不转义原生HTML，所以不再需要进行下面的处理即可在页面上渲染原生的HTML代码。且该引擎支持emoji、上下角标、公式等丰富功能。详情请移步该引擎官网查看：[传送门](https://github.com/CHENXCHEN/hexo-renderer-markdown-it-plus)
+
+~~更多标签说明参考[官方文档](https://hexo.io/zh-cn/docs/tag-plugins)：通过用`{% raw %}HTML{% endraw %}`标签包裹的内容，Hexo不会做处理。例如下面，在文章资源中插入一段视频的代码：~~
+
 ```html
 {% raw %}
 <video controls="" preload="none" poster="封面缩略图URL">
