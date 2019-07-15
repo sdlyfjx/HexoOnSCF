@@ -71,6 +71,8 @@ exports.main_handler = async (event, context, callback) => {
     // console.log(JSON.stringify(event.Records[0].cos))
     // console.log(context)
 
+    if (!event || !event['Records']) return
+
     const regCreate = /cos:ObjectCreated.*/
     const regRemove = /cos:ObjectRemove.*/
     const regDelete = /cos:ObjectDeleted.*/
@@ -124,12 +126,13 @@ async function scfHexo(key) {
         output: dbDir
     })
 
+    // console.log('init with Hexo:',hexo)
     console.log('init')
     await hexo.init()
     // COS下载触发文件到_posts目录
     console.log('download')
     let sourcepath = await download(key)
-    console.log(sourcepath)
+    console.log('download SourcePath', sourcepath)
     // 读取文件头的abbrlink字段
     let sourcefile = fs.readFileSync(sourcepath)
     console.log('source file content length', sourcefile.length)
@@ -140,17 +143,23 @@ async function scfHexo(key) {
         fs.unlinkSync(sourcepath)
         return
     }
+
     // Hexo 生成
     console.log('generate')
-    await hexo.call('generate')
-    // Hexo 退出。
-    console.log('exit')
-    await hexo.exit()
-    // 删除source文件
-    fs.unlinkSync(sourcepath)
+    let ex = await hexo.call('generate').then(function () {
+        console.log('exit')
+        return hexo.exit();
+    }).catch(function (err) {
+        console.log('exit with Error:', err)
+        return hexo.exit(err);
+    });
+    console.log('exit result:', ex)
+
+    // // 删除source文件，去掉这一句，否则会导致第二次生成报错
+    // fs.unlinkSync(sourcepath)
 
     // let res = fs.listDirSync(dbDir)
-    // console.log(res)
+    // console.log('list dir files', res)
 
     // 上传 COS并将生成的数据删除
     console.log('deploy')
@@ -187,17 +196,22 @@ async function download(key) {
     keys.splice(0, 3) //去掉前面的appid和bucketname
     let pmKey = '/' + keys.join('/')
     let pmOutput = postsDir + keys[keys.length - 1]
+    let writeStream = fs.createWriteStream(pmOutput)
     let params = {
         Bucket: _config.cos_v5.bucket,
         Region: _config.cos_v5.region,
         Key: pmKey,
-        Output: pmOutput
+        Output: writeStream
     }
-    console.log('download function params:', params)
+    // console.log('download function params:', params)
     // 下载变更文件
     let result = await cosGetObject(params)
-    console.log('download function result', result)
-    return pmOutput
+    // console.log('download function result', result)
+    return await new Promise((resolve, reject) => {
+        writeStream.on('close', () => {
+            resolve(pmOutput)
+        })
+    })
 }
 
 /**
@@ -206,8 +220,10 @@ async function download(key) {
 async function deploy(abbrlink) {
     let localFileMap = new Map()
     let deploy = deployDir + abbrlink + '/'
-    if (!fs.existsSync(deploy))
+    if (!fs.existsSync(deploy)) {
+        console.log("DEPLOY ERROR, FILE NOT EXISTS!")
         return
+    }
     // 获取本地文件
     getFiles(deploy, (file) => {
         localFileMap.set(
@@ -226,6 +242,7 @@ async function deploy(abbrlink) {
             ContentLength: fs.statSync(filepath).size,
         })
     })
+    // fs.rmdirSync(deploy)
     // 上传新的index.html文件
     let filepath = publicDir + 'index.html'
     if (fs.existsSync(filepath))
