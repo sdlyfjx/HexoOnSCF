@@ -86,7 +86,7 @@ exports.main_handler = async (event, context, callback) => {
 
         if (regCreate.test(eventName)) {
             // 如果是创建事件
-            if (paths[1] == 'res' && paths[paths.length - 1].indexOf('.md')) {
+            if (paths[1] == 'res' && paths[paths.length - 1].indexOf('.md') > 0) {
                 //如果是/res目录下的.md文件，则调用Hexo
                 await scfHexo(key)
             } else if (paths[paths.length - 1].indexOf('.draft') || paths[paths.length - 1] == '') {
@@ -109,7 +109,7 @@ exports.main_handler = async (event, context, callback) => {
  * 当用户上传文章到source目录下时，调用此方法，通过Hexo生成文件并部署
  */
 async function scfHexo(key) {
-    console.log('onCreateMarkdown')
+    console.log('scfHexo Begin')
     // 初始化文件目录
     if (!fs.existsSync(postsDir))
         // 创建_posts目录
@@ -117,7 +117,11 @@ async function scfHexo(key) {
     if (!fs.existsSync(deployDir))
         // 创建deploy目录
         fs.mkdirsSync(deployDir)
-
+    console.log('fileSystem Check Pass')
+    // COS下载触发文件到_posts目录
+    let downloadP = download(key)
+    console.log('start Download Pass')
+    // 必须在每次生成时候new一个，否则在第一次生成后再生成时会出现报错导致无法生成
     let hexo = new HEXO(__dirname, {
         debug: false,
         safe: false,
@@ -125,47 +129,45 @@ async function scfHexo(key) {
         config: configPath,
         output: dbDir
     })
-
+    console.log('new Hexo Client Pass')
     // console.log('init with Hexo:',hexo)
-    console.log('init')
-    await hexo.init()
-    // COS下载触发文件到_posts目录
-    console.log('download')
-    let sourcepath = await download(key)
-    console.log('download SourcePath', sourcepath)
+    let initP = hexo.init()
+    console.log('start Hexo Init Pass')
+    let sourcepath = await downloadP
+    console.log('download Finished With SourcePath', sourcepath)
     // 读取文件头的abbrlink字段
     let sourcefile = fs.readFileSync(sourcepath)
     console.log('source file content length', sourcefile.length)
     let abbrlink = front.parse(sourcefile).abbrlink
     console.log('abbrlink is ', abbrlink)
+    // 等待hexo初始化完成
+    await initP
+    console.log('hexo Init Finished')
     if (!abbrlink) {
         await hexo.exit()
         fs.unlinkSync(sourcepath)
         return
     }
 
-    // Hexo 生成
-    console.log('generate')
-    let ex = await hexo.call('generate').then(function () {
+    // Hexo 生成及部署
+    let pms = []
+    try {
+        console.log('generate')
+        await hexo.call('generate')
         console.log('exit')
-        return hexo.exit();
-    }).catch(function (err) {
-        console.log('exit with Error:', err)
-        return hexo.exit(err);
-    });
-    console.log('exit result:', ex)
-
-    // // 删除source文件，去掉这一句，否则会导致第二次生成报错
-    // fs.unlinkSync(sourcepath)
-
-    // let res = fs.listDirSync(dbDir)
-    // console.log('list dir files', res)
-
-    // 上传 COS并将生成的数据删除
-    console.log('deploy')
-    await deploy(abbrlink)
-
-    return
+        pms.push(hexo.exit())
+        // // 删除source文件，去掉这一句，否则会导致第二次生成报错
+        // fs.unlinkSync(sourcepath)
+        // let res = fs.listDirSync(dbDir)
+        // console.log('list dir files', res)
+        // 上传 COS并将生成的数据删除
+        console.log('deploy')
+        pms.push(deploy(abbrlink))
+    } catch (error) {
+        console.error('exit with Error:', error)
+        pms.push(hexo.exit(error))
+    }
+    return Promise.all(pms)
 }
 
 
@@ -231,28 +233,37 @@ async function deploy(abbrlink) {
             file
         )
     })
-    console.log('deploy localFileMap:', localFileMap)
+    // 准备并行部署文件
+    let pms = []
+    console.time("DEPLOYing...")
+    // console.log('deploy localFileMap:', localFileMap)
     // 上传新生成的blog文件
-    localFileMap.forEach(async (filepath, file) => {
-        await cosPutObject({
-            Bucket: _config.cos_v5.bucket,
-            Region: _config.cos_v5.region,
-            Key: file,
-            Body: fs.createReadStream(filepath),
-            ContentLength: fs.statSync(filepath).size,
-        })
+    localFileMap.forEach((filepath, file) => {
+        pms.push( // 将promise们扔进pms里
+            cosPutObject({
+                Bucket: _config.cos_v5.bucket,
+                Region: _config.cos_v5.region,
+                Key: file,
+                Body: fs.createReadStream(filepath),
+                ContentLength: fs.statSync(filepath).size,
+            })
+        )
     })
     // fs.rmdirSync(deploy)
     // 上传新的index.html文件
     let filepath = publicDir + 'index.html'
     if (fs.existsSync(filepath))
-        await cosPutObject({
-            Bucket: _config.cos_v5.bucket,
-            Region: _config.cos_v5.region,
-            Key: 'index.html',
-            Body: fs.createReadStream(filepath),
-            ContentLength: fs.statSync(filepath).size,
-        })
+        pms.push(
+            cosPutObject({
+                Bucket: _config.cos_v5.bucket,
+                Region: _config.cos_v5.region,
+                Key: 'index.html',
+                Body: fs.createReadStream(filepath),
+                ContentLength: fs.statSync(filepath).size,
+            })
+        )
+    await Promise.all(pms)
+    console.timeEnd("DEPLOYing...")
 }
 
 /**
