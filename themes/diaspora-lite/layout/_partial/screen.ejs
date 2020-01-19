@@ -3,10 +3,10 @@
     <div id="mark">
         <div class="layer" data-depth="0.4">
             <div id="cover" width="1920" height="1080">
-                <%- image_tag(theme.welcome_cover || first.cover || "/img/welcome-cover.jpg", {id: "cover1", crossorigin: "anonymous", width: 1920, height: 1080}) %>
                 <% if(theme.welcome_video){ %>
-                <video autoplay loop muted poster="/img/welcome-cover.jpg" src="/media/video.mp4" type="video/mp4"
-                    width="100%" height="100%"></video>
+                <video id="cover-video" autoplay loop muted poster="/img/welcome-cover.jpg" src="<%- theme.welcome_video%>" type="video/mp4" width="100%" height="100%"></video>
+                <% } else { %>
+                <%- image_tag(theme.welcome_cover || first.cover || "/img/welcome-cover.jpg", {id: "cover-img", crossorigin: "anonymous", width: "100%", height: "100%"}) %>
                 <% } %>
             </div>
         </div>

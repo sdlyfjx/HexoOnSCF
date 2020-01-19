@@ -7,14 +7,6 @@ menu:
 # 是否显示目录
 TOC: false
 
-# 是否自动播放音乐
-autoplay: false
-
-# # 默认音乐
-# mp3: 
-#   - http://link.hhtjim.com/163/5146554.mp3
-#   - http://link.hhtjim.com/qq/001faIUs4M2zna.mp3
-
 # 首页封面视频，优先级高于首页封面图
 welcome_video: /media/video.mp4
 

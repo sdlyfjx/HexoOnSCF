@@ -60,7 +60,6 @@ var Diaspora = {
                     document.title = state.t;
                     $('#preview').html($(data).filter('#single'));
                     Diaspora.preview();
-                    setTimeout(function() { Diaspora.player(); }, 0);
                 });
             }
         });
@@ -98,7 +97,6 @@ var Diaspora = {
                     break;
             }
             setTimeout(function() {
-                Diaspora.player();
                 $('#top').show();
                 comment = $("#gitalk-container");
                 if (comment.data('ae') == true){
@@ -128,44 +126,6 @@ var Diaspora = {
                 });
             }, 500);
         }, 0);
-    },
-    player: function() {
-        var p = $('#audio');
-        if (!p.length) {
-            $('.icon-play').css({
-                'color': '#dedede',
-                'cursor': 'not-allowed'
-            })
-            return
-        }
-        var sourceSrc= $("#audio source").eq(0).attr('src')
-        if (sourceSrc == '' && p[0].src == ''){
-            audiolist = $('#audio-list li');
-            mp3 = audiolist.eq([Math.floor(Math.random() * audiolist.size())])
-            p[0].src = mp3.data('url')
-        }
-
-        if (p.eq(0).data("autoplay") == true) {
-            p[0].play();
-        }
-
-        p.on({
-            'timeupdate': function() {
-                var progress = p[0].currentTime / p[0].duration * 100;
-                $('.bar').css('width', progress + '%');
-                if (progress / 5 <= 1) {
-                    p[0].volume = progress / 5;
-                }else {
-                    p[0].volume = 1;
-                }
-            },
-            'ended': function() {
-                $('.icon-pause').removeClass('icon-pause').addClass('icon-play')
-            },
-            'playing': function() {
-                $('.icon-play').removeClass('icon-play').addClass('icon-pause')
-            }
-        })
     },
     loading: function() {
         var w = window.innerWidth;
@@ -209,15 +169,11 @@ $(function() {
         ;(cover.o = function() {
             $('#mark').height(window.innerHeight)
         })();
-        console.log('AA',cover)
-        if (cover.t.prop('complete')) {
+        if (cover.t.prop('childElementCount')) {
             // why setTimeout ?
-            console.log('COVER T PROP COMPLETE')
             setTimeout(function() { cover.t.load() }, 0)
         }
-        console.log('AAAA',cover)
         cover.t.on('load', function() {
-            console.log('COVER T ON LOAD')
             ;(cover.f = function() {
                 var _w = $('#mark').width(), _h = $('#mark').height(), x, y, i, e;
                 e = (_w >= 1000 || _h >= 1000) ? 1000 : 500;
@@ -246,7 +202,7 @@ $(function() {
                 $('html, body').removeClass('loading')
             }, 10)
             $('#mark').parallax()
-            var vibrant = new Vibrant(cover.t[0]);
+            var vibrant = new Vibrant(cover.t[0].children[0]);
             var swatches = vibrant.swatches()
             if (swatches['DarkVibrant']) {
                 $('#vibrant polygon').css('fill', swatches['DarkVibrant'].getHex())
@@ -256,9 +212,9 @@ $(function() {
                 $('.icon-menu').css('color', swatches['Vibrant'].getHex())
             }
         })
-        if (!cover.t.attr('src')) {
-            alert('Please set the post thumbnail or Welcome_Cover')
-        }
+        // if (!cover.t.attr('src')) {
+        //     console.warn('Please set the post thumbnail or Welcome_Cover')
+        // }
         $('#preview').css('min-height', window.innerHeight)
         Diaspora.PS()
         $('.pview a').addClass('pviewa')
@@ -283,7 +239,6 @@ $(function() {
         window.addEventListener('popstate', function(e) {
             if (e.state) location.href = e.state.u;
         })
-        Diaspora.player();
         $('.icon-icon, .image-icon').attr('href', '/')
         $('#top').show()
     }
@@ -373,18 +328,6 @@ $(function() {
                     $('.icon-scan').addClass('tg')
                     $('#qr').qrcode({ width: 128, height: 128, text: location.href}).toggle()
                 }
-                return false;
-                break;
-            // audio play
-            case (tag.indexOf('icon-play') != -1):
-                $('#audio')[0].play()
-                $('.icon-play').removeClass('icon-play').addClass('icon-pause')
-                return false;
-                break;
-            // audio pause
-            case (tag.indexOf('icon-pause') != -1):
-                $('#audio')[0].pause()
-                $('.icon-pause').removeClass('icon-pause').addClass('icon-play')
                 return false;
                 break;
             // history state
