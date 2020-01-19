@@ -1,0 +1,62 @@
+# 头部菜单，title: link
+menu:
+  Whoami: /whoami
+  Github: https://github.com/Fechin
+  Twitter: https://twitter.com/FechinLi
+
+# 是否显示目录
+TOC: false
+
+# 是否自动播放音乐
+autoplay: false
+
+# # 默认音乐
+# mp3: 
+#   - http://link.hhtjim.com/163/5146554.mp3
+#   - http://link.hhtjim.com/qq/001faIUs4M2zna.mp3
+
+# 首页封面视频，优先级高于首页封面图
+welcome_video: /media/video.mp4
+
+# 首页封面图, 为空时取文章的cover作为封面
+welcome_cover: /img/welcome-cover.jpg
+
+# 默认文章封面图
+cover: /img/cover.jpg
+
+# 是否关闭默认滚动条
+scrollbar: true
+
+# # Gitalk 评论插件（https://github.com/gitalk/gitalk）
+# gitalk:
+#     # 是否自动展开评论框
+#     autoExpand: false
+#     # 应用编号
+#     clientID: ''
+#     # 应用秘钥
+#     clientSecret: ''
+#     # issue仓库名
+#     repo: ''
+#     # Github名
+#     owner: ''
+#     # Github名
+#     admin: ['']
+#     # Ensure uniqueness and length less than 50
+#     id: location.pathname
+#     # Facebook-like distraction free mode
+#     distractionFreeMode: false
+
+# 网站关键字
+keywords: Fechin
+
+# # 要使用google_analytics进行统计的话，这里需要配置ID
+# google_analytics: 
+
+# 要使用baidu_analytics进行统计的话，这里需要配置ID
+# baidu_analytics: 
+
+# 网站ico
+favicon: /img/favicon.png
+
+# rss文件
+rss: atom.xml
