@@ -22,7 +22,7 @@ scrollbar: true
 # # Gitalk 评论插件（https://github.com/gitalk/gitalk）
 # gitalk:
 #     # 是否自动展开评论框
-#     autoExpand: false
+#     autoExpand: true
 #     # 应用编号
 #     clientID: ''
 #     # 应用秘钥
@@ -37,6 +37,36 @@ scrollbar: true
 #     id: location.pathname
 #     # Facebook-like distraction free mode
 #     distractionFreeMode: false
+
+# # Valine 留言插件（https://valine.js.org/quickstart.html）
+# valine:
+#     # 是否自动展开评论框
+#     autoExpand: true
+#     # LeanCloud上的APPID和APPKEY
+#     appId: ''
+#     appKey: ''
+#     # LeanCloud上存储评论的表名
+#     clazzName: 'Comment'
+#     # 评论框占位符
+#     placeHolder: '请输入健康向上的评论内容'
+#     # 评论回复邮件提醒，具体参考valine文档配置
+#     notify: false
+#     # 评论验证码服务
+#     verify: false
+#     # Gravatar头像展示方式：https://valine.js.org/avatar.html
+#     avatar: 'robohash'
+#     # 每次访问强制拉取最新的头像列表
+#     avatarForce: false
+#     # 评论者相关属性：用户可以填写哪些代表自己的信息
+#     meta: ['nick','mail']
+#     # 评论每页分页数
+#     pageSize: 10
+#     # 文章访问量统计
+#     visitor: true
+#     # 代码自动高亮
+#     highlight: true
+#     # 是否记录评论者IP
+#     recordIP: true
 
 # 网站关键字
 keywords: Fechin

@@ -1,0 +1,25 @@
+<% if (theme.valine != undefined){ %>
+<!-- id 将作为查询条件 -->
+<% if (theme.valine.visitor){ %>
+<span id="<%- page.path %>" class="leancloud_visitors" data-flag-title="<%- page.title %>">
+    <em class="post-meta-item-text">阅读量 </em>
+    <i class="leancloud-visitors-count">0</i>
+</span>
+<% } %>
+<div id='valine-container' class="comment link" 
+    data-ae='<%=theme.valine.autoExpand%>' 
+    data-ai='<%=theme.valine.appId%>'
+    data-ak='<%=theme.valine.appKey%>' 
+    data-ph='<%=theme.valine.placeHolder%>' 
+    data-nt='<%=theme.valine.notify%>'
+    data-vr='<%=theme.valine.verify%>' 
+    data-a='<%=theme.valine.avatar%>'
+    data-af='<%=theme.valine.avatarForce%>' 
+    data-mt='<%=JSON.stringify(theme.valine.meta)%>' 
+    data-ps='<%=theme.valine.pageSize%>'
+    data-vs='<%=theme.valine.visitor%>' 
+    data-hl='<%=theme.valine.highlight%>' 
+    data-ip='<%=theme.valine.recordIP%>'
+    data-cn='<%=theme.valine.clazzName%>'>查看评论
+</div>
+<% } %>

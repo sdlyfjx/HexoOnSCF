@@ -9,7 +9,8 @@
         <div class="content markdown">
             <%- page.content %>
         </div>
-        <% if (theme.gitalk != undefined){ %>  <%- partial('gitalk', {post: page}) %>  <% } %>
+        <% if (!page.disComment && theme.gitalk != undefined){ %>  <%- partial('gitalk', {post: page}) %>  <% } %>
+        <% if (!page.disComment && theme.valine != undefined){ %>  <%- partial('valine', {post: page}) %>  <% } %>
     </div>
     <% if (theme.TOC == true){ %>
         <div class='side'>
