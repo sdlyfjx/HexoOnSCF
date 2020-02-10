@@ -145,7 +145,7 @@ h1.title {font-size:30px;color:#333;line-height:1.3;position:relative;font-weigh
 .comment .gt-counts a{color:black;border-bottom:0;pointer-events:none;}
 .comment .gt-avatar-github{display:none;}
 .comment .gt-header-avatar{display:none;}
-.comment .gt-header-comment{margin-left: 0;!important;}
+.comment .gt-header-comment{margin-left: 0 !important;}
 .comment .gt-header-preview{border-radius:0;}
 .comment .gt-btn-public{border-radius:0;}
 .comment .gt-btn-preview{border-radius:0;}
