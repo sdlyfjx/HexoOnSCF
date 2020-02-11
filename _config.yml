@@ -116,7 +116,9 @@ symbols_count_time:
   time: true
   # 开启全站统计
   total_symbols: true
-  total_time: false
+  total_time: true
+  # 排除代码块统计
+  exclude_codeblock: false
 
 # 自动识别超链接，记得关闭urls的转换，因为这会导致百度的统计模块失效
 ## Docs: https://github.com/klugjo/hexo-autolinker

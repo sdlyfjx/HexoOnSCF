@@ -68,6 +68,10 @@ scrollbar: true
 #     # 是否记录评论者IP
 #     recordIP: true
 
+# 不蒜子访问统计
+# http://ibruce.info/2015/04/04/busuanzi/
+busuanzi: false
+
 # 网站关键字
 keywords: Fechin
 

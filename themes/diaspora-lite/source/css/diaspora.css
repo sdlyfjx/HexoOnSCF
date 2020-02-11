@@ -281,7 +281,7 @@ pre .keyword,pre .javascript .function {color:#cc99cc;}
   #header {top:40px;}
   #vibrant svg {display:none;}
   #vibrant div {opacity:0.3;}
-  #container {padding-bottom:50px;}
+  #container {padding-bottom:0px;}
   #post0 {bottom:60px;top:auto;width:70%;left:5%;}
   .menu {width:80%;margin:160px auto 0;}
   .menu li {font-size:16px;}
