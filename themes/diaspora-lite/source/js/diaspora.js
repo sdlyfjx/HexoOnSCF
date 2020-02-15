@@ -106,11 +106,11 @@ var Diaspora = {
             setTimeout(function () {
                 $('#top').show();
                 comment = $("#gitalk-container");
-                if (comment.data('ae') == true) {
+                if (comment.data('ae')) {
                     comment.click();
                 }
                 comment = $("#valine-container");
-                if (comment.data('ae') == true) {
+                if (comment.data('ae')) {
                     comment.click();
                 }
             }, 0)
@@ -180,14 +180,7 @@ $(function () {
         (cover.o = function () {
             $('#mark').height(window.innerHeight)
         })();
-        if (cover.t.prop('childElementCount')) {
-            // why setTimeout ?
-            setTimeout(function () {
-                cover.t.load()
-            }, 0)
-        }
         cover.t.on('load', function () {
-            ;
             (cover.f = function () {
                 var _w = $('#mark').width(),
                     _h = $('#mark').height(),
@@ -218,7 +211,7 @@ $(function () {
                 $('html, body').removeClass('loading')
             }, 10)
             $('#mark').parallax()
-            var vibrant = new Vibrant(cover.t[0].children[0]);
+            var vibrant = new Vibrant(cover.t[0]);
             var swatches = vibrant.swatches()
             if (swatches['DarkVibrant']) {
                 $('#vibrant polygon').css('fill', swatches['DarkVibrant'].getHex())
@@ -228,9 +221,30 @@ $(function () {
                 $('.icon-menu').css('color', swatches['Vibrant'].getHex())
             }
         })
-        // if (!cover.t.attr('src')) {
-        //     console.warn('Please set the post thumbnail or Welcome_Cover')
-        // }
+        if (cover.t.prop('complete') && cover.t.prop('naturalHeight')) { // 如果是图片则通过complete和naturalHeight属性判断图片是否设置正确
+            // why setTimeout ? 答：开启一个后台任务用于load()
+            setTimeout(function () {
+                cover.t.load()
+            }, 0)
+        } else if (cover.t.prop('networkState') != undefined && cover.t.prop('networkState') != 3) { // 如果不是图片且网络状态正常，则通过下面的方法循环判断加载完成
+            setTimeout(async () => {
+                while (true) {
+                    // console.log({readyState:cover.t.prop('readyState'),networkState:cover.t.prop('networkState')})
+                    if (cover.t.prop('readyState') > 3) {
+                        cover.t.load();
+                        break;
+                    } else if (cover.t.prop('networkState') == 3) break;
+                    await new Promise((res, rej) => {
+                        setTimeout(() => {
+                            res()
+
+                        }, 10);
+                    })
+                }
+            }, 0);
+        } else {
+            alert('未设置封面或封面资源加载失败！')
+        }
         $('#preview').css('min-height', window.innerHeight)
         Diaspora.PS()
         $('.pview a').addClass('pviewa')
@@ -292,7 +306,6 @@ $(function () {
                 window.scrollTo(0, 0)
                 $('html, body').toggleClass('mu');
                 return false;
-                break;
                 // next page
             case (tag.indexOf('more') != -1):
                 tag = $('.more');
@@ -327,7 +340,6 @@ $(function () {
                     tag.html('加载更多').data('status', 'loaded')
                 })
                 return false;
-                break;
                 // home
             case (tag.indexOf('icon-home') != -1):
                 $('.toc').fadeOut(100);
@@ -337,7 +349,6 @@ $(function () {
                     location.href = $('.icon-home').data('url')
                 }
                 return false;
-                break;
                 // qrcode
             case (tag.indexOf('icon-scan') != -1):
                 if ($('.icon-scan').hasClass('tg')) {
@@ -351,17 +362,14 @@ $(function () {
                     }).toggle()
                 }
                 return false;
-                break;
                 // history state
             case (tag.indexOf('cover') != -1):
                 Diaspora.HS($(e.target).parent(), 'push')
                 return false;
-                break;
                 // history state
             case (tag.indexOf('posttitle') != -1):
                 Diaspora.HS($(e.target), 'push')
                 return false;
-                break;
                 // prev, next post
             case (rel == 'prev' || rel == 'next'):
                 if (rel == 'prev') {
@@ -372,7 +380,6 @@ $(function () {
                 $(e.target).attr('title', t)
                 Diaspora.HS($(e.target), 'replace')
                 return false;
-                break;
                 // toc
             case (tag.indexOf('toc-text') != -1 || tag.indexOf('toc-link') != -1 ||
                 tag.indexOf('toc-number') != -1):
@@ -387,7 +394,6 @@ $(function () {
                     scrollTop: to.offset().top - 50
                 }, 300);
                 return false;
-                break;
                 // quick view
             case (tag.indexOf('pviewa') != -1):
                 $('body').removeClass('mu')
@@ -396,7 +402,6 @@ $(function () {
                     $('.toc').fadeIn(1000);
                 }, 300)
                 return false;
-                break;
                 // photoswipe
             case (tag.indexOf('pimg') != -1):
                 var pswpElement = $('.pswp').get(0);
@@ -440,14 +445,12 @@ $(function () {
                     lightBox.init();
                 }
                 return false;
-                break;
                 // comment
             case -1 != tag.indexOf("comment"):
                 Diaspora.loading()
-                // init gitalk
                 comment = $('#gitalk-container');
                 if (comment.data('ci')) {
-                    console.log('INIT GITTALK')
+                    console.log('INIT GITALK')
                     gitalk = new Gitalk({
                         clientID: comment.data('ci'),
                         clientSecret: comment.data('cs'),
@@ -485,20 +488,18 @@ $(function () {
                 }
                 Diaspora.loaded();
                 return false;
-                break;
             default:
                 return true;
-                break;
         }
     })
     // 是否自动展开评论
     comment = $("#gitalk-container");
-    if (comment.data('ae') == true) {
+    if (comment.data('ae')) {
         comment.click();
     }
     comment = $('#valine-container');
-    if (comment.data('ae') == true) {
+    if (comment.data('ae')) {
         comment.click();
     }
-    console.log("%c Github %c", "background:#24272A; color:#ffffff", "", "https://github.com/Fechin/hexo-theme-diaspora")
+    console.log("%c Github %c", "background:#24272A; color:#ffffff", "", "https://github.com/sdlyfjx/HexoOnSCF")
 })

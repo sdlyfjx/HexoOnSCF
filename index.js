@@ -65,6 +65,10 @@ const RefreshCdnDirSync = function (dirs) {
     })
 }
 
+const regCreate = /cos:ObjectCreated.*/
+const regRemove = /cos:ObjectRemove.*/
+const regDelete = /cos:ObjectDeleted.*/
+
 exports.main_handler = async (event, context, callback) => {
     console.log("Hello World")
     console.log(JSON.stringify(event))
@@ -73,36 +77,38 @@ exports.main_handler = async (event, context, callback) => {
 
     if (!event || !event['Records']) return
 
-    const regCreate = /cos:ObjectCreated.*/
-    const regRemove = /cos:ObjectRemove.*/
-    const regDelete = /cos:ObjectDeleted.*/
-
     for (let record of event['Records']) {
         let eventName = record['event']['eventName']
         let key = record['cos']['cosObject']['key']
         let url = record['cos']['cosObject']['url']
         let path = URL.parse(url).pathname
         let paths = path.split('/')
+        // console.log({eventName,key,url,path,paths})
 
         if (regCreate.test(eventName)) {
             // 如果是创建事件
             if (paths[1] == 'res' && paths[paths.length - 1].indexOf('.md') > 0) {
                 //如果是/res目录下的.md文件，则调用Hexo
-                await scfHexo(key)
-            } else if (paths[paths.length - 1].indexOf('.draft') || paths[paths.length - 1] == '') {
-                // 如果是目录的创建或草稿文件，则不做处理
-                return
+                return await scfHexo(key)
+            } else if (paths[paths.length - 1].indexOf('.draft') > 0 || paths[paths.length - 1] == '') {
+                // 如果是草稿文件或者目录的创建，则不做处理
+                return 'Draft File Or Dir Created'
+            } else if (paths[0] == '' && paths[1].indexOf('index.html') > 0) {
+                // 如果是首页的HTML文件，则刷新首页的CDN
+                return await scfRefreshCDN(path, paths)
             } else {
                 // 如果是其他目录下的文件的创建，则调用接口刷新CDN
-                await scfRefreshCDN(path, paths)
+                return await scfRefreshCDN(path, paths)
             }
         } else if (regRemove.test(eventName) || regDelete.test(eventName)) {
             // 如果是删除事件，则刷新CDN，及时让链接过期
-            await scfRefreshCDN(path, paths)
+            return await scfRefreshCDN(path, paths)
+        } else {
+            return 'EventName Unimplement'
         }
     }
 
-    return
+    return 'Do Nothing'
 }
 
 /**
@@ -169,7 +175,6 @@ async function scfHexo(key) {
     }
     return Promise.all(pms)
 }
-
 
 async function scfRefreshCDN(path, paths) {
     console.log('Start scfRefreshCDN', path, paths)

@@ -87,12 +87,12 @@ body.mu .icon-menu:before {content:"\e607";}
 body.mu .nav {top:0;}
 body.mu .icon-logo {color:#333;}
 .menu {text-align:center;margin-top:200px;}
-.menu li {font-size:18px;display:inline-block;margin:0 20px 20px 0;}
+.menu li {font-size:20px;display:inline-block;margin:0 20px 20px 0;}
 .menu a {color:#666;letter-spacing:1px;}
 .menu a:hover {color:#333;}
-.nav p {color:#999;font-size:12px;position:absolute;width:100%;text-align:center;bottom:30px;}
-.nav p a {color:#999;text-decoration:underline;}
-.nav p:first-letter {font-family:sans-serif;}
+#copyright {color:#999;font-size:12px;position:absolute;width:100%;text-align:center;bottom:30px;}
+#copyright a {color:#999;text-decoration:underline;}
+#copyright:first-letter {font-family:sans-serif;}
 .set {display:block;max-width:768px;margin:0 auto 30px;line-height:2;padding-left:30px}
 .set h3 {font-size:22px;font-weight:500;margin:15px 0 20px}
 .set a {display:inline-block;position:relative;color:#424242;padding:5px 5px}
@@ -120,7 +120,6 @@ body.mu .icon-logo {color:#333;}
 .timeline-item a {color:#212121;font-weight:400;transition:all .3s ease}
 .timeline-item::before {width:9px;height:9px;border-width:2px;left:-38px}
 #container {overflow:hidden;position:relative;}
-#container:before {content:'';display:block;width:1px;height:200%;position:absolute;left:50%;background:#eaeaea;top:-50%;z-index:0;}
 #primary {position:relative;}
 #single {background:#fff;position:relative;overflow-x:hidden;}
 .section {position:relative;width:100%;overflow:hidden;-webkit-transition:all 0.3s cubic-bezier(0.25,0.5,0.5,0.9);-moz-transition:all 0.3s cubic-bezier(0.25,0.5,0.5,0.9);transition:all 0.3s cubic-bezier(0.25,0.5,0.5,0.9);}
@@ -277,7 +276,7 @@ pre .keyword,pre .javascript .function {color:#cc99cc;}
   .article .side {display:none}
   .comment .gt-btn-public .gt-btn-text:after{content:"";}
 }
-@media screen and (max-width:780px) {
+@media screen and (max-width:760px) {
   #header {top:40px;}
   #vibrant svg {display:none;}
   #vibrant div {opacity:0.3;}
@@ -313,3 +312,4 @@ pre .keyword,pre .javascript .function {color:#cc99cc;}
   .article .side {display:none}
   .comment .gt-btn-public .gt-btn-text:after{content:"";}
 }
+.leancloud_visitors{color: #ef459c;}
